@@ -60,6 +60,7 @@ const updateDisplay = (function () {
     } 
 
     function updateBoard(e){
+        if (e.target.dataset.played != "") return;
         console.log(e.target);
         let currentPlayer = createPlayers.getCurrentPlayer();
         e.target.dataset.played = currentPlayer.symbol;
