@@ -53,15 +53,15 @@ const updateDisplay = (function () {
             cell.dataset.played = "";
             cell.classList += "cell"
             
-            cell.addEventListener("click", play);
+            cell.addEventListener("click", updateBoard);
             board.appendChild(cell);
         }
         boardContainer.appendChild(board);
     } 
 
-    function play(e) {
+    function updateBoard(e){
         console.log(e.target);
-        let currentPlayer = createGame.getCurrentPlayer();
+        let currentPlayer = createPlayers.getCurrentPlayer();
         e.target.dataset.played = currentPlayer.symbol;
         e.target.textContent = currentPlayer.symbol;
 
@@ -81,15 +81,7 @@ const updateDisplay = (function () {
 const createPlayers = (function () {
     const player1 = {symbol : "X"};
     const player2 = {symbol : "o"};
-    return {player1, player2};
-})();
-
-
-const createGame = (function () {
-
-    const gameBoard = updateDisplay.createBoard();
-    const player1 = createPlayers.player1;
-    const player2 = createPlayers.player2;
+    
     let currentPlayer = player2;
 
     function switchCurrentPlayer() {
@@ -100,10 +92,15 @@ const createGame = (function () {
         return currentPlayer
     };
 
+    return {player1, player2, getCurrentPlayer};
+})();
 
-    
 
-    return {gameBoard, player1, player2, getCurrentPlayer};
+const createGame = (function () {
+    const gameBoard = updateDisplay.createBoard();
+
+
+    return {gameBoard};
 })();
 
 
