@@ -80,7 +80,7 @@ const updateDisplay = (function () {
 
 const createPlayers = (function () {
     const player1 = {symbol : "X"};
-    const player2 = {symbol : "o"};
+    const player2 = {symbol : "O"};
     
     let currentPlayer = player2;
 

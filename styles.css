@@ -23,5 +23,9 @@ h1 {
 .cell {
     width: calc(10rem - 2px) ;
     height: calc(10rem - 2px);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 8rem;
+    text-align: center;
+    text-justify: center;
     border: 1px solid gray;
 }
