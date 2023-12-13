@@ -7,10 +7,19 @@ const createGameboard = (function () {
                 const cellDetails = {
                     coordinateX : i,
                     coordinateY : j,
-                    played : "X"
+                    played : ""
                 };
 
                 gameBoard.push(cellDetails);
+            }
+        }
+    }
+
+    function updateBoard (x, y, played) {
+        for (let i = 0; i < gameBoard.length; i++) {
+            if (gameBoard[i].coordinateX == x &&
+            gameBoard[i].coordinateY == y) {
+                gameBoard[i].played = played;
             }
         }
     }
@@ -21,12 +30,12 @@ const createGameboard = (function () {
     };
    
     
-    return {getBoard}
+    return {getBoard, updateBoard}
 })();
 
 const displayController = (function () {
     const gameBoard = createGameboard.getBoard();
-    
+
     return {gameBoard};
 })();
 
@@ -56,6 +65,12 @@ const updateDisplay = (function () {
         e.target.dataset.played = currentPlayer.symbol;
         e.target.textContent = currentPlayer.symbol;
 
+        let x = Number(e.target.dataset.position[0]);
+        let y = Number(e.target.dataset.position[2]);
+        let played = e.target.dataset.played;
+        createGameboard.updateBoard(x, y, played);
+
+        console.log(gameBoard);
     }
 
 
@@ -84,6 +99,9 @@ const createGame = (function () {
         switchCurrentPlayer();
         return currentPlayer
     };
+
+
+    
 
     return {gameBoard, player1, player2, getCurrentPlayer};
 })();
