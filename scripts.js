@@ -16,7 +16,7 @@ const createGameboard = (function () {
     }
 
     function getBoard () {
-        createBoard();
+        if (gameBoard.length === 0)createBoard();
         return gameBoard
     };
    
@@ -51,5 +51,22 @@ const updateDisplay = (function () {
     return {createBoard};
 })();
 
-updateDisplay.createBoard();
+
+const createPlayers = (function () {
+    const player1 = {symbol : "X"};
+    const player2 = {symbol : "o"};
+    return {player1, player2};
+})();
+
+
+const createGame = (function () {
+
+    const gameBoard = updateDisplay.createBoard();
+    const player1 = createPlayers.player1;
+    const player2 = createPlayers.player2;
+
+    return {gameBoard, player1, player2,};
+})();
+
+createGame.gameBoard;
 
