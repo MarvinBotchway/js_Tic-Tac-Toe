@@ -61,7 +61,6 @@ const updateDisplay = (function () {
 
     function updateBoard(e){
         if (e.target.dataset.played != "") return;
-        console.log(e.target);
         let currentPlayer = createPlayers.getCurrentPlayer();
         e.target.dataset.played = currentPlayer.symbol;
         e.target.textContent = currentPlayer.symbol;
@@ -72,6 +71,8 @@ const updateDisplay = (function () {
         createGameboard.updateBoard(x, y, played);
 
         console.log(gameBoard);
+        
+        createGame.checkWin(gameBoard);
     }
 
 
@@ -98,10 +99,56 @@ const createPlayers = (function () {
 
 
 const createGame = (function () {
-    const gameBoard = updateDisplay.createBoard();
+    const createGameBoardUI = updateDisplay.createBoard();
+    const winner = {}; 
+
+    function checkWin(gameBoard) {
+        // 7 Because we check i + 2
+        for(let i = 0; i < 3; i++) {
+            if (gameBoard[i].played != ""){
+                if (
+                    gameBoard[i].coordinateX == gameBoard[i + 1].coordinateX
+                    && gameBoard[i].coordinateX == gameBoard[i + 2].coordinateX
+                    && gameBoard[i].played == gameBoard[i + 1].played
+                    && gameBoard[i].played == gameBoard[i + 2].played
+                    ) {
+                    console.log(`${gameBoard[i].played} Wins!!!`);
+                } else if (
+                    gameBoard[i].coordinateY == gameBoard[i + 3].coordinateY
+                    && gameBoard[i].coordinateY == gameBoard[i + 6].coordinateY
+                    && gameBoard[i].played == gameBoard[i + 3].played
+                    && gameBoard[i].played == gameBoard[i + 6].played
+                    ) {
+                    console.log(`${gameBoard[i].played} Wins!!!`);
+
+                } else if (
+                    gameBoard[i].coordinateX == gameBoard[i].coordinateY
+                    && gameBoard[i].played == gameBoard[i + 4].played
+                    && gameBoard[i].played == gameBoard[i + 8].played
+                    ) {
+                    console.log(`${gameBoard[i].played} Wins!!!`);
+
+                } else if (
+                    gameBoard[i].coordinateX == gameBoard[i + 4].coordinateY
+                    && gameBoard[i + 2].coordinateX == gameBoard[i + 2].coordinateY
+                    && gameBoard[i].played == gameBoard[i + 2].played
+                    && gameBoard[i].played == gameBoard[i + 4].played
+                    ) {
+                    console.log(`${gameBoard[i].played} Wins!!!`);
+
+                }
+            }
+            
+           
 
 
-    return {gameBoard};
+
+        }
+    }
+
+
+
+    return {createGameBoardUI, checkWin};
 })();
 
 
