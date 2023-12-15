@@ -142,8 +142,8 @@ const createGame = (function () {
 
     function checkWin(gameBoard) {
         let playerSymbol = "";
-        // 3 Because we check i + something
-        for(let i = 0; i < 3; i++) {
+
+        for(let i = 0; i <= 6; i++) {
             if (gameBoard[i].played != ""){
                 if (
                     gameBoard[i].coordinateX == gameBoard[i + 1].coordinateX
@@ -154,7 +154,14 @@ const createGame = (function () {
                     playerSymbol = gameBoard[i].played;
                     winner = createPlayers.getPlayer(playerSymbol);
                 
-                } else if (
+                }
+             }
+        
+        }
+        // 3 Because we check i + something
+        for(let i = 0; i < 3; i++) {
+            if (gameBoard[i].played != ""){
+                if (
                     gameBoard[i].coordinateY == gameBoard[i + 3].coordinateY
                     && gameBoard[i].coordinateY == gameBoard[i + 6].coordinateY
                     && gameBoard[i].played == gameBoard[i + 3].played
