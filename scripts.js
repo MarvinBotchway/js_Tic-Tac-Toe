@@ -73,6 +73,13 @@ const updateDisplay = (function () {
         console.log(gameBoard);
         
         createGame.checkWin(gameBoard);
+        const winner = createGame.getWinner();
+        console.log(winner);
+
+        if (winner.symbol) {
+            const winnerTxt = document.querySelector("#winner-txt");
+            winnerTxt.textContent = `${winner.symbol} Wins!!!`;
+        }
     }
 
 
@@ -93,17 +100,22 @@ const createPlayers = (function () {
         switchCurrentPlayer();
         return currentPlayer
     };
+    function getPlayer(symbol) {
+        if (player1.symbol === symbol) {return player1}
+        else return player2
+    }
 
-    return {player1, player2, getCurrentPlayer};
+    return {player1, player2, getCurrentPlayer, getPlayer};
 })();
 
 
 const createGame = (function () {
     const createGameBoardUI = updateDisplay.createBoard();
-    const winner = {}; 
+    let winner = {}; 
 
     function checkWin(gameBoard) {
-        // 7 Because we check i + 2
+        let playerSymbol = "";
+        // 3 Because we check i + something
         for(let i = 0; i < 3; i++) {
             if (gameBoard[i].played != ""){
                 if (
@@ -112,21 +124,25 @@ const createGame = (function () {
                     && gameBoard[i].played == gameBoard[i + 1].played
                     && gameBoard[i].played == gameBoard[i + 2].played
                     ) {
-                    console.log(`${gameBoard[i].played} Wins!!!`);
+                    playerSymbol = gameBoard[i].played;
+                    winner = createPlayers.getPlayer(playerSymbol);
+                
                 } else if (
                     gameBoard[i].coordinateY == gameBoard[i + 3].coordinateY
                     && gameBoard[i].coordinateY == gameBoard[i + 6].coordinateY
                     && gameBoard[i].played == gameBoard[i + 3].played
                     && gameBoard[i].played == gameBoard[i + 6].played
                     ) {
-                    console.log(`${gameBoard[i].played} Wins!!!`);
+                    playerSymbol = gameBoard[i].played;
+                    winner = createPlayers.getPlayer(playerSymbol);
 
                 } else if (
                     gameBoard[i].coordinateX == gameBoard[i].coordinateY
                     && gameBoard[i].played == gameBoard[i + 4].played
                     && gameBoard[i].played == gameBoard[i + 8].played
                     ) {
-                    console.log(`${gameBoard[i].played} Wins!!!`);
+                    playerSymbol = gameBoard[i].played;
+                    winner = createPlayers.getPlayer(playerSymbol);
 
                 } else if (
                     gameBoard[i].coordinateX == gameBoard[i + 4].coordinateY
@@ -134,21 +150,17 @@ const createGame = (function () {
                     && gameBoard[i].played == gameBoard[i + 2].played
                     && gameBoard[i].played == gameBoard[i + 4].played
                     ) {
-                    console.log(`${gameBoard[i].played} Wins!!!`);
+                    playerSymbol = gameBoard[i].played;
+                    winner = createPlayers.getPlayer(playerSymbol);
 
                 }
             }
-            
-           
-
-
-
         }
     }
 
+    function getWinner() {return winner};
 
-
-    return {createGameBoardUI, checkWin};
+    return {createGameBoardUI, checkWin, getWinner};
 })();
 
 
