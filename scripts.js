@@ -1,3 +1,30 @@
+const displayController = (function () {
+    function getGameBoard() { return createGameboard.getGameBoard(); }
+    
+    function updateGameBoard (x, y, played) { createGameboard.updateGameBoard(x, y, played); }
+       
+    function removeGameBoard() { createGameboard.removeGameBoard(); }
+
+    function checkForWin(gameBoard) { createGame.checkForWin(gameBoard); }
+
+    function getWinner() { return createGame.getWinner(); }
+
+    function resetWinner() { createGame.resetWinner(); }
+
+    function createBoardUI() { updateDisplay.createBoard();}
+
+    return {
+        getGameBoard,
+        updateGameBoard,
+        removeGameBoard,
+        checkForWin,
+        getWinner,
+        resetWinner,
+        createBoardUI
+    };
+})();
+
+
 const createGameboard = (function () {
     let gameBoard = [];
    
@@ -15,7 +42,12 @@ const createGameboard = (function () {
         }
     }
 
-    function updateBoard (x, y, played) {
+    function getGameBoard () {
+        if (gameBoard.length === 0)createBoard();
+        return gameBoard;
+    }
+    
+    function updateGameBoard (x, y, played) {
         for (let i = 0; i < gameBoard.length; i++) {
             if (gameBoard[i].coordinateX == x &&
             gameBoard[i].coordinateY == y) {
@@ -24,33 +56,22 @@ const createGameboard = (function () {
         }
     }
 
-    function getBoard () {
-        if (gameBoard.length === 0)createBoard();
-        return gameBoard;
-    };
-
     function removeGameBoard() {
         gameBoard = [];
     }
    
     
-    return {getBoard, updateBoard, removeGameBoard};
+    return {removeGameBoard, getGameBoard, updateGameBoard};
 })();
 
-const displayController = (function () {
-    const gameBoard = createGameboard.getBoard();
-
-    return {gameBoard};
-})();
 
 const updateDisplay = (function () {
-    let gameBoard = displayController.gameBoard;
-    let winner = {};
     const boardContainer = document.querySelector("#board-container");
     const winnerTxt = document.querySelector("#winner-txt");
     const resetBtn = document.createElement("button");
     
     function createBoard() {
+        let gameBoard = displayController.getGameBoard();
         const board = document.createElement("div");
         board.classList += "board";
  
@@ -68,24 +89,25 @@ const updateDisplay = (function () {
 
     function updateBoard(e){
         if (e.target.dataset.played != "") return;
-        let currentPlayer = createPlayers.getCurrentPlayer();
+        
+        const actionSection = document.querySelector("#action-section");
+        let currentPlayer = winner = {};
+        let coordinateX = coordinateY = 0;
+        let played = "";
+        
+        currentPlayer = createPlayers.getCurrentPlayer();
         e.target.dataset.played = currentPlayer.symbol;
         e.target.textContent = currentPlayer.symbol;
 
-        let x = Number(e.target.dataset.position[0]);
-        let y = Number(e.target.dataset.position[2]);
-        let played = e.target.dataset.played;
-        createGameboard.updateBoard(x, y, played);
+        coordinateX = Number(e.target.dataset.position[0]);
+        coordinateY = Number(e.target.dataset.position[2]);
+        played = e.target.dataset.played;
 
-        console.log(gameBoard);
-        
-        createGame.checkWin(gameBoard);
-        winner = createGame.getWinner();
-        console.log(winner);
+        displayController.updateGameBoard(coordinateX, coordinateY, played);
+        displayController.checkForWin(displayController.getGameBoard());
+        winner = displayController.getWinner();
 
         if (winner.symbol) {
-            const actionSection = document.querySelector("#action-section");
-           
             winnerTxt.textContent = `${winner.symbol} Wins!!!`;
 
             resetBtn.addEventListener("click", resetBoard);
@@ -98,21 +120,20 @@ const updateDisplay = (function () {
 
     function resetBoard() {
         boardContainer.removeChild(boardContainer.firstChild);
-        createGameboard.removeGameBoard();
-        gameBoard = createGameboard.getBoard();
+        displayController.removeGameBoard();
+        gameBoard = displayController.gameBoard;
         
         winnerTxt.textContent = "";
-        createGame.resetWinner();
-        winner = createGame.getWinner();
+    
+        displayController.resetWinner();
+        winner = displayController.getWinner();
         createBoard();
 
         resetBtn.remove();
     }
 
-
     return {createBoard};
 })();
-
 
 const createPlayers = (function () {
     const player1 = {symbol : "X"};
@@ -136,66 +157,60 @@ const createPlayers = (function () {
 })();
 
 
+
 const createGame = (function () {
-    const createGameBoardUI = updateDisplay.createBoard();
+    displayController.createBoardUI();
     let winner = {}; 
 
-    function checkWin(gameBoard) {
+    function checkForWin(gameBoard) {
         let playerSymbol = "";
 
         for(let i = 0; i <= 6; i++) {
-            if (gameBoard[i].played != ""){
-                if (
-                    gameBoard[i].coordinateX == gameBoard[i + 1].coordinateX
-                    && gameBoard[i].coordinateX == gameBoard[i + 2].coordinateX
-                    && gameBoard[i].played == gameBoard[i + 1].played
-                    && gameBoard[i].played == gameBoard[i + 2].played
-                    ) {
+            if (
+                gameBoard[i].played != ""
+                && gameBoard[i].coordinateX == gameBoard[i + 1].coordinateX
+                && gameBoard[i].coordinateX == gameBoard[i + 2].coordinateX
+                && gameBoard[i].played == gameBoard[i + 1].played
+                && gameBoard[i].played == gameBoard[i + 2].played
+                ) {
                     playerSymbol = gameBoard[i].played;
                     winner = createPlayers.getPlayer(playerSymbol);
-                
-                }
              }
         
         }
         // 3 Because we check i + something
         for(let i = 0; i < 3; i++) {
-            if (gameBoard[i].played != ""){
-                if (
-                    gameBoard[i].coordinateY == gameBoard[i + 3].coordinateY
+            if (
+                gameBoard[i].played != ""
+                && (
+                    ( gameBoard[i].coordinateY == gameBoard[i + 3].coordinateY
                     && gameBoard[i].coordinateY == gameBoard[i + 6].coordinateY
                     && gameBoard[i].played == gameBoard[i + 3].played
-                    && gameBoard[i].played == gameBoard[i + 6].played
-                    ) {
-                    playerSymbol = gameBoard[i].played;
-                    winner = createPlayers.getPlayer(playerSymbol);
+                    && gameBoard[i].played == gameBoard[i + 6].played ) 
 
-                } else if (
-                    gameBoard[i].coordinateX == gameBoard[i].coordinateY
-                    && gameBoard[i].played == gameBoard[i + 4].played
-                    && gameBoard[i].played == gameBoard[i + 8].played
-                    ) {
-                    playerSymbol = gameBoard[i].played;
-                    winner = createPlayers.getPlayer(playerSymbol);
+                    || ( gameBoard[i].coordinateX == gameBoard[i].coordinateY
+                        && gameBoard[i].played == gameBoard[i + 4].played
+                        && gameBoard[i].played == gameBoard[i + 8].played )
 
-                } else if (
-                    gameBoard[i].coordinateX == gameBoard[i + 4].coordinateY
-                    && gameBoard[i + 2].coordinateX == gameBoard[i + 2].coordinateY
-                    && gameBoard[i].played == gameBoard[i + 2].played
-                    && gameBoard[i].played == gameBoard[i + 4].played
-                    ) {
-                    playerSymbol = gameBoard[i].played;
-                    winner = createPlayers.getPlayer(playerSymbol);
-
-                }
+                    || ( gameBoard[i].coordinateX == gameBoard[i + 4].coordinateY
+                        && gameBoard[i + 2].coordinateX == gameBoard[i + 2].coordinateY
+                        && gameBoard[i].played == gameBoard[i + 2].played
+                        && gameBoard[i].played == gameBoard[i + 4].played )
+                    )
+            ) { 
+                playerSymbol = gameBoard[i].played;
+                winner = createPlayers.getPlayer(playerSymbol);
             }
+            
         }
+        
     }
 
     function getWinner() {return winner};
+
     function resetWinner() {winner = {}};
 
-    return {createGameBoardUI, checkWin, getWinner, resetWinner};
+    return {checkForWin, getWinner, resetWinner};
 })();
 
 
