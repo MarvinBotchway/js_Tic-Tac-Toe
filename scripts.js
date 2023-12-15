@@ -26,11 +26,15 @@ const createGameboard = (function () {
 
     function getBoard () {
         if (gameBoard.length === 0)createBoard();
-        return gameBoard
+        return gameBoard;
     };
+
+    function removeGameBoard() {
+        gameBoard = [];
+    }
    
     
-    return {getBoard, updateBoard}
+    return {getBoard, updateBoard, removeGameBoard};
 })();
 
 const displayController = (function () {
@@ -40,10 +44,13 @@ const displayController = (function () {
 })();
 
 const updateDisplay = (function () {
-    const gameBoard = displayController.gameBoard;
+    let gameBoard = displayController.gameBoard;
+    let winner = {};
+    const boardContainer = document.querySelector("#board-container");
+    const winnerTxt = document.querySelector("#winner-txt");
+    const resetBtn = document.createElement("button");
     
     function createBoard() {
-        const boardContainer = document.querySelector("#board-container");
         const board = document.createElement("div");
         board.classList += "board";
  
@@ -73,13 +80,33 @@ const updateDisplay = (function () {
         console.log(gameBoard);
         
         createGame.checkWin(gameBoard);
-        const winner = createGame.getWinner();
+        winner = createGame.getWinner();
         console.log(winner);
 
         if (winner.symbol) {
-            const winnerTxt = document.querySelector("#winner-txt");
+            const actionSection = document.querySelector("#action-section");
+           
             winnerTxt.textContent = `${winner.symbol} Wins!!!`;
+
+            resetBtn.addEventListener("click", resetBoard);
+            resetBtn.innerHTML = "RESET";
+
+            actionSection.appendChild(resetBtn);
+            
         }
+    }
+
+    function resetBoard() {
+        boardContainer.removeChild(boardContainer.firstChild);
+        createGameboard.removeGameBoard();
+        gameBoard = createGameboard.getBoard();
+        
+        winnerTxt.textContent = "";
+        createGame.resetWinner();
+        winner = createGame.getWinner();
+        createBoard();
+
+        resetBtn.remove();
     }
 
 
@@ -159,8 +186,9 @@ const createGame = (function () {
     }
 
     function getWinner() {return winner};
+    function resetWinner() {winner = {}};
 
-    return {createGameBoardUI, checkWin, getWinner};
+    return {createGameBoardUI, checkWin, getWinner, resetWinner};
 })();
 
 
