@@ -15,6 +15,8 @@ const DisplayController = (function () {
     
     function createGameSetupForm() { return UpdateDisplay.createGameSetupForm(); }
 
+    function addPlayersNames(player1sName, player2sName) {return CreatePlayers.addPlayersNames(player1sName, player2sName);}
+
     return {
         getGameBoard,
         createGameSetupForm,
@@ -23,7 +25,8 @@ const DisplayController = (function () {
         checkForWin,
         getWinner,
         resetWinner,
-        createBoardUI
+        createBoardUI,
+        addPlayersNames
     };
 })();
 
@@ -81,6 +84,7 @@ const UpdateDisplay = (function () {
         const player1Label = document.createElement("label");
         const player1Input = document.createElement("input");
         player1Input.id = "player1";
+        player1Input.name = "player1";
         player1Input.placeholder = "eg: Jack";
         player1Label.htmlFor = "player1";
         player1Label.textContent = "X's Name";
@@ -88,6 +92,7 @@ const UpdateDisplay = (function () {
         const player2Label = document.createElement("label");
         const player2Input = document.createElement("input");
         player2Input.id = "player2";
+        player2Input.name = "player2";
         player2Input.placeholder = "eg: Jill";
         player2Label.htmlFor = "player2";
         player2Label.textContent = "O's Name";
@@ -102,8 +107,22 @@ const UpdateDisplay = (function () {
         registerPlayersForm.appendChild(player2Label);
         registerPlayersForm.appendChild(player2Input);
         registerPlayersForm.appendChild(submitButton);
+        registerPlayersForm.addEventListener("submit", submitForm);
         
         actionSection.appendChild(registerPlayersForm);
+
+        function submitForm(e) {
+            e.preventDefault();
+            let player1sName = player1Input.value;
+            let player2sName = player2Input.value;
+
+            if (player1sName == "" || player2sName == "") {
+                console.log("Form Not Fully Filled");
+            } else {
+                DisplayController.addPlayersNames(player1sName, player2sName);
+            }
+
+        }
 
     }
     
@@ -144,7 +163,7 @@ const UpdateDisplay = (function () {
         winner = DisplayController.getWinner();
 
         if (winner.symbol) {
-            winnerTxt.textContent = `${winner.symbol} Wins!!!`;
+            winnerTxt.textContent = `${winner.name}(${winner.symbol}) Wins!!!`;
             winnerTxt.id = "winner-txt";
 
             resetBtn.addEventListener("click", resetBoard);
@@ -175,8 +194,14 @@ const UpdateDisplay = (function () {
 })();
 
 const CreatePlayers = (function () {
-    const player1 = {symbol : "X"};
-    const player2 = {symbol : "O"};
+    const player1 = {
+        symbol : "X",
+        name : ""
+    };
+    const player2 = {
+        symbol : "O",
+        name : ""
+    };
     
     let currentPlayer = player2;
 
@@ -187,12 +212,20 @@ const CreatePlayers = (function () {
         switchCurrentPlayer();
         return currentPlayer
     };
+
+    function addPlayersNames(player1sName, player2sName) {
+        player1.name = player1sName;
+        player2.name = player2sName;
+
+        console.log(player1);
+        console.log(player2);
+    }
     function getPlayer(symbol) {
         if (player1.symbol === symbol) {return player1}
         else return player2
     }
 
-    return {player1, player2, getCurrentPlayer, getPlayer};
+    return {getCurrentPlayer, getPlayer, addPlayersNames};
 })();
 
 const CheckForWinner = (function () {
