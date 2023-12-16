@@ -17,6 +17,9 @@ const DisplayController = (function () {
 
     function addPlayersNames(player1sName, player2sName) {return CreatePlayers.addPlayersNames(player1sName, player2sName);}
 
+    function getCurrentPlayer() {return CreatePlayers.getCurrentPlayer();}
+    
+    function switchCurrentPlayer() {CreatePlayers.switchCurrentPlayer();}
     return {
         getGameBoard,
         createGameSetupForm,
@@ -26,7 +29,9 @@ const DisplayController = (function () {
         getWinner,
         resetWinner,
         createBoardUI,
-        addPlayersNames
+        addPlayersNames,
+        getCurrentPlayer,
+        switchCurrentPlayer
     };
 })();
 
@@ -74,8 +79,10 @@ const CreateGameboard = (function () {
 const UpdateDisplay = (function () {
     const boardContainer = document.querySelector("#board-container");
     const winnerTxt = document.createElement("h2");
+    const currentPlayerTxt = document.createElement("h2");
     const resetBtn = document.createElement("button");
     const actionSection = document.querySelector("#action-section");
+    
 
     function createGameSetupForm() {
         const registerPlayersForm = document.createElement("form");
@@ -120,6 +127,14 @@ const UpdateDisplay = (function () {
                 console.log("Form Not Fully Filled");
             } else {
                 DisplayController.addPlayersNames(player1sName, player2sName);
+                actionSection.innerHTML = "";
+    
+                currentPlayerTxt.textContent = `${player1sName}'s Turn`;
+                actionSection.appendChild(currentPlayerTxt);
+        
+                if (CreatePlayers.getPlayers()[0].name != "") {
+                    DisplayController.createBoardUI();
+                }
             }
 
         }
@@ -144,15 +159,33 @@ const UpdateDisplay = (function () {
     } 
 
     function updateBoard(e){
+        console.log("A");
         if (e.target.dataset.played != "") return;
         
-        let currentPlayer = winner = {};
+        let currentPlayer = {};
+        let nextPlayer = {};
+        let winner = DisplayController.getWinner();
         let coordinateX = coordinateY = 0;
         let played = "";
-        
-        currentPlayer = CreatePlayers.getCurrentPlayer();
+
+        if (winner.name) {
+            // Since the current player would be the next player switch to the winner
+            DisplayController.switchCurrentPlayer();
+        }
+
+        currentPlayer = DisplayController.getCurrentPlayer();
+        // Need The Old currentPlayer Fill The cell
         e.target.dataset.played = currentPlayer.symbol;
         e.target.textContent = currentPlayer.symbol;
+
+        DisplayController.switchCurrentPlayer();
+        currentPlayer = DisplayController.getCurrentPlayer();
+
+        currentPlayerTxt.textContent = `${currentPlayer.name}'s Turn`;
+        actionSection.innerHTML = "";
+        actionSection.appendChild(currentPlayerTxt);
+        console.log(currentPlayer);
+        
 
         coordinateX = Number(e.target.dataset.position[0]);
         coordinateY = Number(e.target.dataset.position[2]);
@@ -163,7 +196,7 @@ const UpdateDisplay = (function () {
         winner = DisplayController.getWinner();
 
         if (winner.symbol) {
-            winnerTxt.textContent = `${winner.name}(${winner.symbol}) Wins!!!`;
+            winnerTxt.textContent = `${winner.name} Wins!!!`;
             winnerTxt.id = "winner-txt";
 
             resetBtn.addEventListener("click", resetBoard);
@@ -174,15 +207,27 @@ const UpdateDisplay = (function () {
             actionSection.appendChild(resetBtn);
             
         }
+
     }
 
     function resetBoard() {
+
+        let currentPlayer = {};
+        let winner = DisplayController.getWinner();
+
         boardContainer.removeChild(boardContainer.firstChild);
         DisplayController.removeGameBoard();
         gameBoard = DisplayController.gameBoard;
         
-        winnerTxt.textContent = "";
-    
+        actionSection.innerHTML = "";
+       
+        // Since the current player would be the next player switch to the winner
+        DisplayController.switchCurrentPlayer();
+        
+        currentPlayer = DisplayController.getCurrentPlayer();
+        currentPlayerTxt.textContent = `${currentPlayer.name}'s Turn`
+        actionSection.appendChild(currentPlayerTxt);
+        
         DisplayController.resetWinner();
         winner = DisplayController.getWinner();
         createBoard();
@@ -203,15 +248,12 @@ const CreatePlayers = (function () {
         name : ""
     };
     
-    let currentPlayer = player2;
+    let currentPlayer = player1;
 
     function switchCurrentPlayer() {
         currentPlayer = currentPlayer == player1 ? player2 : player1;
     }
-    function getCurrentPlayer() {
-        switchCurrentPlayer();
-        return currentPlayer
-    };
+    function getCurrentPlayer() { return currentPlayer };
 
     function addPlayersNames(player1sName, player2sName) {
         player1.name = player1sName;
@@ -225,7 +267,17 @@ const CreatePlayers = (function () {
         else return player2
     }
 
-    return {getCurrentPlayer, getPlayer, addPlayersNames};
+    function getPlayers() {
+        return [player1, player2];
+    }
+
+    return {
+        switchCurrentPlayer,
+        getCurrentPlayer,
+        getPlayer,
+        getPlayers,
+        addPlayersNames
+    };
 })();
 
 const CheckForWinner = (function () {
@@ -284,8 +336,6 @@ const CheckForWinner = (function () {
 
 
 const CreateGame = (function () {
-   
     DisplayController.createGameSetupForm();
-    DisplayController.createBoardUI();
-
+    
 })();
