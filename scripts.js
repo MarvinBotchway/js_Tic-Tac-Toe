@@ -5,11 +5,11 @@ const displayController = (function () {
        
     function removeGameBoard() { createGameboard.removeGameBoard(); }
 
-    function checkForWin(gameBoard) { createGame.checkForWin(gameBoard); }
+    function checkForWin(gameBoard) { checkForWinner.checkForWin(gameBoard); }
 
-    function getWinner() { return createGame.getWinner(); }
+    function getWinner() { return checkForWinner.getWinner(); }
 
-    function resetWinner() { createGame.resetWinner(); }
+    function resetWinner() { checkForWinner.resetWinner(); }
 
     function createBoardUI() { updateDisplay.createBoard();}
 
@@ -156,10 +156,7 @@ const createPlayers = (function () {
     return {player1, player2, getCurrentPlayer, getPlayer};
 })();
 
-
-
-const createGame = (function () {
-    displayController.createBoardUI();
+const checkForWinner = (function () {
     let winner = {}; 
 
     function checkForWin(gameBoard) {
@@ -214,3 +211,8 @@ const createGame = (function () {
 })();
 
 
+const createGame = (function () {
+    
+    displayController.createBoardUI();
+
+})();
