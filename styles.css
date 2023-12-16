@@ -8,7 +8,7 @@
 }
 h1 {
     text-align: center;
-    height: 10vh;
+    height: 3rem;
     margin-top: 10vh;
 }
 button {
@@ -21,6 +21,7 @@ button {
     border-radius: 30px;
     margin: 0 auto;
     align-items: center;
+    height: 3rem;
 }
 button:hover {
     color: white;
@@ -29,10 +30,13 @@ button:hover {
 
 #winner-txt {
     text-align: center;
-    height: 10vh;
+    height: 3rem;
+    color: gold;
+    font-size: xx-large;
 }   
 #action-section {
     margin-bottom: 2rem;
+    height: 6rem;
 }
 .board {
     display: flex;
