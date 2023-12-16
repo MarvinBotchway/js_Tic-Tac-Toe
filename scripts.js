@@ -1,6 +1,6 @@
 const DisplayController = (function () {
     function getGameBoard() { return CreateGameboard.getGameBoard(); }
-    
+     
     function updateGameBoard (x, y, played) { CreateGameboard.updateGameBoard(x, y, played); }
        
     function removeGameBoard() { CreateGameboard.removeGameBoard(); }
@@ -12,9 +12,12 @@ const DisplayController = (function () {
     function resetWinner() { CheckForWinner.resetWinner(); }
 
     function createBoardUI() { UpdateDisplay.createBoard();}
+    
+    function createGameSetupForm() { return UpdateDisplay.createGameSetupForm(); }
 
     return {
         getGameBoard,
+        createGameSetupForm,
         updateGameBoard,
         removeGameBoard,
         checkForWin,
@@ -67,8 +70,42 @@ const CreateGameboard = (function () {
 
 const UpdateDisplay = (function () {
     const boardContainer = document.querySelector("#board-container");
-    const winnerTxt = document.querySelector("#winner-txt");
+    const winnerTxt = document.createElement("h2");
     const resetBtn = document.createElement("button");
+    const actionSection = document.querySelector("#action-section");
+
+    function createGameSetupForm() {
+        const registerPlayersForm = document.createElement("form");
+        registerPlayersForm.id = "registration-form";
+        
+        const player1Label = document.createElement("label");
+        const player1Input = document.createElement("input");
+        player1Input.id = "player1";
+        player1Input.placeholder = "eg: Jack";
+        player1Label.htmlFor = "player1";
+        player1Label.textContent = "X's Name";
+        
+        const player2Label = document.createElement("label");
+        const player2Input = document.createElement("input");
+        player2Input.id = "player2";
+        player2Input.placeholder = "eg: Jill";
+        player2Label.htmlFor = "player2";
+        player2Label.textContent = "O's Name";
+
+        const submitButton = document.createElement("button");
+        submitButton.type = "submit";
+        submitButton.textContent = "SAVE";
+
+
+        registerPlayersForm.appendChild(player1Label);
+        registerPlayersForm.appendChild(player1Input);
+        registerPlayersForm.appendChild(player2Label);
+        registerPlayersForm.appendChild(player2Input);
+        registerPlayersForm.appendChild(submitButton);
+        
+        actionSection.appendChild(registerPlayersForm);
+
+    }
     
     function createBoard() {
         let gameBoard = DisplayController.getGameBoard();
@@ -90,7 +127,6 @@ const UpdateDisplay = (function () {
     function updateBoard(e){
         if (e.target.dataset.played != "") return;
         
-        const actionSection = document.querySelector("#action-section");
         let currentPlayer = winner = {};
         let coordinateX = coordinateY = 0;
         let played = "";
@@ -109,10 +145,13 @@ const UpdateDisplay = (function () {
 
         if (winner.symbol) {
             winnerTxt.textContent = `${winner.symbol} Wins!!!`;
+            winnerTxt.id = "winner-txt";
 
             resetBtn.addEventListener("click", resetBoard);
             resetBtn.innerHTML = "RESET";
 
+            actionSection.removeChild(actionSection.firstElementChild);
+            actionSection.appendChild(winnerTxt);
             actionSection.appendChild(resetBtn);
             
         }
@@ -132,7 +171,7 @@ const UpdateDisplay = (function () {
         resetBtn.remove();
     }
 
-    return {createBoard};
+    return {createBoard, createGameSetupForm};
 })();
 
 const CreatePlayers = (function () {
@@ -212,7 +251,8 @@ const CheckForWinner = (function () {
 
 
 const CreateGame = (function () {
-    
+   
+    DisplayController.createGameSetupForm();
     DisplayController.createBoardUI();
 
 })();
