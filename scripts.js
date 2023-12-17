@@ -213,6 +213,19 @@ const UpdateDisplay = (function () {
             
         }
 
+        if (winner == "draw") {
+            winnerTxt.textContent = "It's A Draw";
+            winnerTxt.id = "winner-txt";
+
+            resetBtn.addEventListener("click", resetBoard);
+            resetBtn.innerHTML = "RESET";
+
+            actionSection.removeChild(actionSection.firstElementChild);
+            actionSection.appendChild(winnerTxt);
+            actionSection.appendChild(resetBtn);
+ 
+        }
+
     }
 
     function resetBoard() {
@@ -287,7 +300,7 @@ const CheckForWinner = (function () {
     function checkForWin(gameBoard) {
         let playerSymbol = "";
 
-        for(let i = 0; i <= 6; i++) {
+        for (let i = 0; i <= 6; i++) {
             if (
                 gameBoard[i].played != ""
                 && gameBoard[i].coordinateX == gameBoard[i + 1].coordinateX
@@ -301,7 +314,7 @@ const CheckForWinner = (function () {
         
         }
         // 3 Because we check i + something
-        for(let i = 0; i < 3; i++) {
+        for (let i = 0; i < 3; i++) {
             if (
                 gameBoard[i].played != ""
                 && (
@@ -323,8 +336,16 @@ const CheckForWinner = (function () {
                 playerSymbol = gameBoard[i].played;
                 winner = CreatePlayers.getPlayer(playerSymbol);
             }
-            
         }
+
+        for (let i = 0; i < gameBoard.length; i++) {
+            if (gameBoard[i].played == "") {break;}
+            else if (gameBoard[i].played != "" && i == (gameBoard.length - 1) && playerSymbol == "") {
+                winner = "draw";
+            }
+        }
+
+        playerSymbol = "";
         
     }
 
