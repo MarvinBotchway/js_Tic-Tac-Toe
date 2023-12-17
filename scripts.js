@@ -86,6 +86,7 @@ const UpdateDisplay = (function () {
     const registerPlayersForm = document.createElement("form");
 
     let errorMessage = "";
+    let winner = {};
 
     function createGameSetupForm() {
         registerPlayersForm.id = "registration-form";
@@ -169,10 +170,9 @@ const UpdateDisplay = (function () {
     } 
 
     function updateBoard(e){
-         if (e.target.dataset.played != "") return;
+        if (e.target.dataset.played != "" || winner.symbol) return;
         
         let currentPlayer = {};
-        let winner = {};
         let coordinateX = coordinateY = 0;
         let played = "";
 
@@ -229,8 +229,9 @@ const UpdateDisplay = (function () {
     }
 
     function resetBoard() {
-
         let currentPlayer = {};
+
+        winner = {};
 
         boardContainer.removeChild(boardContainer.firstChild);
         DisplayController.removeGameBoard();
