@@ -41,6 +41,12 @@ input:focus {
 input:focus::placeholder {
     color: transparent;
 }
+
+.error {
+    color: red;
+    text-align: center;
+    padding-bottom: .5rem;
+}
 button {
     display: block;
     background-color: rgb(253, 95, 95);

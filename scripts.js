@@ -78,14 +78,16 @@ const CreateGameboard = (function () {
 
 const UpdateDisplay = (function () {
     const boardContainer = document.querySelector("#board-container");
+    const actionSection = document.querySelector("#action-section");
+        
     const winnerTxt = document.createElement("h2");
     const currentPlayerTxt = document.createElement("h2");
     const resetBtn = document.createElement("button");
-    const actionSection = document.querySelector("#action-section");
-    
+    const registerPlayersForm = document.createElement("form");
+
+    let errorMessage = "";
 
     function createGameSetupForm() {
-        const registerPlayersForm = document.createElement("form");
         registerPlayersForm.id = "registration-form";
         
         const player1Label = document.createElement("label");
@@ -95,6 +97,8 @@ const UpdateDisplay = (function () {
         player1Input.placeholder = "eg: Jack";
         player1Label.htmlFor = "player1";
         player1Label.textContent = "X's Name";
+
+
         
         const player2Label = document.createElement("label");
         const player2Input = document.createElement("input");
@@ -107,7 +111,6 @@ const UpdateDisplay = (function () {
         const submitButton = document.createElement("button");
         submitButton.type = "submit";
         submitButton.textContent = "SAVE";
-
 
         registerPlayersForm.appendChild(player1Label);
         registerPlayersForm.appendChild(player1Input);
@@ -122,12 +125,19 @@ const UpdateDisplay = (function () {
             e.preventDefault();
             let player1sName = player1Input.value;
             let player2sName = player2Input.value;
+            
+            if (errorMessage != "" && (player1sName.trim() == "" || player2sName.trim() == "")){
+                return;
+            } else if ( player1sName.trim() == "" || player2sName.trim() == "") {
+                errorMessage = document.createElement("p");
+                errorMessage.textContent = "Enter A Name For Each Player";
+               
+                errorMessage.classList += "error";
+                registerPlayersForm.insertBefore(errorMessage, registerPlayersForm.lastChild);
 
-            if (player1sName == "" || player2sName == "") {
-                console.log("Form Not Fully Filled");
             } else {
                 DisplayController.addPlayersNames(player1sName, player2sName);
-                actionSection.innerHTML = "";
+                actionSection.removeChild(actionSection.firstElementChild);
     
                 currentPlayerTxt.textContent = `${player1sName}'s Turn`;
                 actionSection.appendChild(currentPlayerTxt);
@@ -159,17 +169,14 @@ const UpdateDisplay = (function () {
     } 
 
     function updateBoard(e){
-        console.log("A");
-        if (e.target.dataset.played != "") return;
+         if (e.target.dataset.played != "") return;
         
         let currentPlayer = {};
-        let nextPlayer = {};
-        let winner = DisplayController.getWinner();
+        let winner = {};
         let coordinateX = coordinateY = 0;
         let played = "";
 
         if (winner.name) {
-            // Since the current player would be the next player switch to the winner
             DisplayController.switchCurrentPlayer();
         }
 
@@ -182,10 +189,8 @@ const UpdateDisplay = (function () {
         currentPlayer = DisplayController.getCurrentPlayer();
 
         currentPlayerTxt.textContent = `${currentPlayer.name}'s Turn`;
-        actionSection.innerHTML = "";
+        actionSection.removeChild(actionSection.firstElementChild);
         actionSection.appendChild(currentPlayerTxt);
-        console.log(currentPlayer);
-        
 
         coordinateX = Number(e.target.dataset.position[0]);
         coordinateY = Number(e.target.dataset.position[2]);
@@ -213,7 +218,6 @@ const UpdateDisplay = (function () {
     function resetBoard() {
 
         let currentPlayer = {};
-        let winner = DisplayController.getWinner();
 
         boardContainer.removeChild(boardContainer.firstChild);
         DisplayController.removeGameBoard();
@@ -229,7 +233,6 @@ const UpdateDisplay = (function () {
         actionSection.appendChild(currentPlayerTxt);
         
         DisplayController.resetWinner();
-        winner = DisplayController.getWinner();
         createBoard();
 
         resetBtn.remove();
@@ -258,10 +261,8 @@ const CreatePlayers = (function () {
     function addPlayersNames(player1sName, player2sName) {
         player1.name = player1sName;
         player2.name = player2sName;
-
-        console.log(player1);
-        console.log(player2);
     }
+    
     function getPlayer(symbol) {
         if (player1.symbol === symbol) {return player1}
         else return player2
