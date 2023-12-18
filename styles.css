@@ -79,6 +79,13 @@ button:hover {
     /* border-radius: 30px; */
 
 }
+#score-section {
+    margin: 0 auto .5rem auto;
+    height: fit-content;
+    width: fit-content;
+    font-size: x-large;
+    
+}
 .board {
     display: flex;
     flex-wrap: wrap;

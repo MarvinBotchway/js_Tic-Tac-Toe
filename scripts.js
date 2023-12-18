@@ -42,6 +42,11 @@ const DisplayController = (function () {
   function switchCurrentPlayer() {
     CreatePlayers.switchCurrentPlayer();
   }
+
+  function getPlayers() {
+    return CreatePlayers.getPlayers();
+  }
+
   return {
     getGameBoard,
     createGameSetupForm,
@@ -54,6 +59,7 @@ const DisplayController = (function () {
     addPlayersNames,
     getCurrentPlayer,
     switchCurrentPlayer,
+    getPlayers,
   };
 })();
 
@@ -97,6 +103,7 @@ const CreateGameboard = (function () {
 const UpdateDisplay = (function () {
   const boardContainer = document.querySelector("#board-container");
   const actionSection = document.querySelector("#action-section");
+  const scoreSection = document.querySelector("#score-section");
 
   const winnerTxt = document.createElement("h2");
   const currentPlayerTxt = document.createElement("h2");
@@ -220,11 +227,22 @@ const UpdateDisplay = (function () {
     winner = DisplayController.getWinner();
 
     if (winner.symbol) {
+      const scoreTxt = document.createElement("h2");
+      const players = DisplayController.getPlayers();
+
       winnerTxt.textContent = `${winner.name} Wins!!!`;
       winnerTxt.id = "winner-txt";
 
       resetBtn.addEventListener("click", resetBoard);
       resetBtn.innerHTML = "RESET";
+      console.log(players);
+
+      if (scoreSection.firstElementChild) {
+        scoreSection.removeChild(scoreSection.firstElementChild);
+      }
+      scoreTxt.textContent = `${players[0].name} - ${players[0].score} |
+      ${players[1].name} - ${players[1].score}`;
+      scoreSection.appendChild(scoreTxt);
 
       actionSection.removeChild(actionSection.firstElementChild);
       actionSection.appendChild(winnerTxt);
@@ -275,10 +293,12 @@ const CreatePlayers = (function () {
   const player1 = {
     symbol: "X",
     name: "",
+    score: 0,
   };
   const player2 = {
     symbol: "O",
     name: "",
+    score: 0,
   };
 
   let currentPlayer = player1;
@@ -293,6 +313,11 @@ const CreatePlayers = (function () {
   function addPlayersNames(player1sName, player2sName) {
     player1.name = player1sName;
     player2.name = player2sName;
+  }
+
+  function increasePlayerScore(symbol) {
+    let player = getPlayer(symbol);
+    player.score += 1;
   }
 
   function getPlayer(symbol) {
@@ -311,6 +336,7 @@ const CreatePlayers = (function () {
     getPlayer,
     getPlayers,
     addPlayersNames,
+    increasePlayerScore,
   };
 })();
 
@@ -365,6 +391,10 @@ const CheckForWinner = (function () {
       }
     }
 
+    if (playerSymbol != "") {
+      CreatePlayers.increasePlayerScore(playerSymbol);
+      console.log(CreatePlayers.getPlayer(playerSymbol));
+    }
     playerSymbol = "";
   }
 
