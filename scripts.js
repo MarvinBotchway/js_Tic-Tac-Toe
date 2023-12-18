@@ -105,7 +105,6 @@ const UpdateDisplay = (function () {
   const actionSection = document.querySelector("#action-section");
   const scoreSection = document.querySelector("#score-section");
 
-  const winnerTxt = document.createElement("h2");
   const currentPlayerTxt = document.createElement("h2");
   const resetBtn = document.createElement("button");
   const registerPlayersForm = document.createElement("form");
@@ -114,6 +113,9 @@ const UpdateDisplay = (function () {
   let winner = {};
 
   function createGameSetupForm() {
+    const formContainer = document.querySelector("#form-container");
+    formContainer.id = "form-container";
+
     registerPlayersForm.id = "registration-form";
 
     const player1Label = document.createElement("label");
@@ -143,7 +145,7 @@ const UpdateDisplay = (function () {
     registerPlayersForm.appendChild(submitButton);
     registerPlayersForm.addEventListener("submit", submitForm);
 
-    actionSection.appendChild(registerPlayersForm);
+    formContainer.appendChild(registerPlayersForm);
 
     function submitForm(e) {
       e.preventDefault();
@@ -166,7 +168,7 @@ const UpdateDisplay = (function () {
         );
       } else {
         DisplayController.addPlayersNames(player1sName, player2sName);
-        actionSection.removeChild(actionSection.firstElementChild);
+        formContainer.remove();
 
         currentPlayerTxt.textContent = `${player1sName}'s Turn`;
         actionSection.appendChild(currentPlayerTxt);
@@ -179,6 +181,7 @@ const UpdateDisplay = (function () {
   }
 
   function createBoard() {
+    actionSection.style.display = "flex";
     let gameBoard = DisplayController.getGameBoard();
     const board = document.createElement("div");
     board.classList += "board";
@@ -230,9 +233,6 @@ const UpdateDisplay = (function () {
       const scoreTxt = document.createElement("h2");
       const players = DisplayController.getPlayers();
 
-      winnerTxt.textContent = `${winner.name} Wins!!!`;
-      winnerTxt.id = "winner-txt";
-
       resetBtn.addEventListener("click", resetBoard);
       resetBtn.innerHTML = "RESET";
       console.log(players);
@@ -245,7 +245,6 @@ const UpdateDisplay = (function () {
       scoreSection.appendChild(scoreTxt);
 
       actionSection.removeChild(actionSection.firstElementChild);
-      actionSection.appendChild(winnerTxt);
       actionSection.appendChild(resetBtn);
     }
 
