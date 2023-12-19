@@ -104,6 +104,7 @@ const UpdateDisplay = (function () {
   const boardContainer = document.querySelector("#board-container");
   const actionSection = document.querySelector("#action-section");
   const scoreSection = document.querySelector("#score-section");
+  const headingContainer = document.querySelector("#heading-container");
 
   const currentPlayerTxt = document.createElement("h2");
   const resetBtn = document.createElement("button");
@@ -181,6 +182,10 @@ const UpdateDisplay = (function () {
   }
 
   function createBoard() {
+    let newGameButton = document.createElement("button");
+    newGameButton.textContent = "Exit Game";
+    headingContainer.appendChild(newGameButton);
+
     actionSection.style.display = "flex";
     let gameBoard = DisplayController.getGameBoard();
     const board = document.createElement("div");
