@@ -104,7 +104,7 @@ button:hover {
     flex-wrap: wrap;
     width: var(--boardSide);
     height: var(--boardSide);
-    margin: auto;
+    margin: auto auto 1rem auto;
     background-color: whitesmoke;
     border: 1px solid gray;
 }

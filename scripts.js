@@ -182,10 +182,6 @@ const UpdateDisplay = (function () {
   }
 
   function createBoard() {
-    let newGameButton = document.createElement("button");
-    newGameButton.textContent = "Exit Game";
-    headingContainer.appendChild(newGameButton);
-
     actionSection.style.display = "flex";
     let gameBoard = DisplayController.getGameBoard();
     const board = document.createElement("div");
@@ -201,6 +197,10 @@ const UpdateDisplay = (function () {
       board.appendChild(cell);
     }
     boardContainer.appendChild(board);
+
+    let newGameButton = document.createElement("button");
+    newGameButton.textContent = "Exit Game";
+    boardContainer.appendChild(newGameButton);
   }
 
   function updateBoard(e) {
