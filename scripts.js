@@ -200,7 +200,12 @@ const UpdateDisplay = (function () {
 
     let newGameButton = document.createElement("button");
     newGameButton.textContent = "Exit Game";
+    newGameButton.addEventListener("click", reload);
     boardContainer.appendChild(newGameButton);
+  }
+
+  function reload() {
+    document.location.reload();
   }
 
   function updateBoard(e) {
