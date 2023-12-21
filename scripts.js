@@ -108,6 +108,7 @@ const UpdateDisplay = (function () {
 
   const newGameButton = document.createElement("button");
   const resetBtn = document.createElement("button");
+  const winnerTxt = document.createElement("h2");
 
   const currentPlayerTxt = document.createElement("h2");
   const registerPlayersForm = document.createElement("form");
@@ -245,6 +246,9 @@ const UpdateDisplay = (function () {
       const scoreTxt = document.createElement("h2");
       const players = DisplayController.getPlayers();
 
+      winnerTxt.textContent = `${winner.name} Won!`;
+      winnerTxt.id = "winner-txt";
+
       resetBtn.addEventListener("click", resetBoard);
       resetBtn.innerHTML = "RESET";
       console.log(players);
@@ -257,6 +261,7 @@ const UpdateDisplay = (function () {
       scoreSection.appendChild(scoreTxt);
 
       actionSection.removeChild(actionSection.firstElementChild);
+      actionSection.appendChild(winnerTxt);
       actionSection.appendChild(resetBtn);
     }
 

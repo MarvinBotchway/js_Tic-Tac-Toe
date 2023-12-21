@@ -91,6 +91,9 @@ button:hover {
 
 #action-section > h2 {
     display: block;
+    background-color: gold;
+    padding: .5rem;
+    margin-right: .5rem;
 }
 #score-section {
     margin: 0 auto .5rem auto;
