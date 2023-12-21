@@ -106,8 +106,10 @@ const UpdateDisplay = (function () {
   const scoreSection = document.querySelector("#score-section");
   const headingContainer = document.querySelector("#heading-container");
 
-  const currentPlayerTxt = document.createElement("h2");
+  const newGameButton = document.createElement("button");
   const resetBtn = document.createElement("button");
+
+  const currentPlayerTxt = document.createElement("h2");
   const registerPlayersForm = document.createElement("form");
 
   let errorMessage = "";
@@ -198,14 +200,14 @@ const UpdateDisplay = (function () {
     }
     boardContainer.appendChild(board);
 
-    let newGameButton = document.createElement("button");
-    newGameButton.textContent = "Exit Game";
+    newGameButton.textContent = "New Game";
     newGameButton.addEventListener("click", reload);
     boardContainer.appendChild(newGameButton);
   }
 
   function reload() {
     document.location.reload();
+    newGameButton.remove();
   }
 
   function updateBoard(e) {
